@@ -24,44 +24,54 @@ class handleFileData():
 
         handleFiles = []
         if not os.path.isfile(path):
+            rootpath = path
             for root, dirs, files in os.walk(path):
-                handleFiles.extend(files)
+                handleFiles.extend([os.path.join(root, f) for f in files])
         else:
             handleFiles.append(path)
+            p = path.split(os.sep)
+            rootpath = os.sep.join(p[0:len(p)-1])
         for file in handleFiles:
-            with open(file, "r", encoding="utf-8") as f:
-                for content in f:
-                    # try:
-                    #     content = f.readline()
-                    # except UnicodeDecodeError as e:
-                    #     # has UnicodeDecodeError data buyao
-                    #     print(e)
-                    hide = False
-                    for index, rule in enumerate(self.rules):
+            # rb mode to open, will not has decodeError
+            with open(file, "rb") as f:
+                try:
+                    for content in f:
                         try:
-                            r = re.compile(rule)
-                        except re.error as e:
-                            print(e)
-                            sys.exit(0)
-                        if r.search(content):
-                            with open("{}.txt".format(index), "a", encoding="utf-8") as fr:
-                                fr.write("{}\r".format(content.strip()))
-                                print("{}.txt -> {}".format(index, content.strip()))
-                            # has in will break
-                            hide = True
-                            break
-                    if not hide:
-                        with open("not_hide.txt", "a", encoding="utf-8") as fh:
-                            fh.write("{}\r".format(content.strip()))
-                            print("not_hide.txt -> {}".format(content.strip()))
+                            # handle decodeError
+                            content = content.decode("utf-8")
+                        except UnicodeDecodeError as e:
+                            # has UnicodeDecodeError data buyao
+                            print("[UnicodeDecodeError] ", e)
+                            continue
+                        hide = False
+                        for index, rule in enumerate(self.rules):
+                            try:
+                                r = re.compile(rule)
+                            except re.error as e:
+                                print(e)
+                                sys.exit(0)
+                            if r.search(content):
+                                with open("{}/{}.txt".format(rootpath, index), "a", encoding="utf-8") as fr:
+                                    fr.write("{}\r".format(content.strip()))
+                                    print("{}.txt -> {}".format(index, content.strip()))
+                                # has in will break
+                                hide = True
+                                break
+                        if not hide:
+                            with open("{}/not_hide.txt".format(rootpath), "a", encoding="utf-8") as fh:
+                                fh.write("{}\r".format(content.strip()))
+                                print("not_hide.txt -> {}".format(content.strip()))
+                except UnicodeDecodeError as e:
+                    # has UnicodeDecodeError data buyao
+                    print(e)
 
 
 # Press the green button in the gutter to run the script.
 if __name__ == '__main__':
-    # if len(sys.argv) == 1:
-    #     print("usage: python handleFileData.py path")
-    #     sys.exit(0)
+    if len(sys.argv) == 1:
+        print("usage: python handleFileData.py path")
+        sys.exit(0)
     handleFileData = handleFileData()
-    handleFileData.handle(sys.argv[2])
+    handleFileData.handle(sys.argv[1])
     # handleFileData.handle("D:\\tools\\tools\\myDicts\\04 dirDict\\dir.txt")
     pass
