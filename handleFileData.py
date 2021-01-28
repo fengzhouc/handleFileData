@@ -10,7 +10,7 @@ class handleFileData():
     rules = []
 
     def __init__(self):
-        print("[init] config init...")
+        print("[init] config.ini init...")
         config = ConfigParser()
         try:
             config.read("config.ini", encoding="utf-8")
@@ -22,6 +22,7 @@ class handleFileData():
 
     def handle(self, path):
 
+        print("waiting.....")
         handleFiles = []
         if not os.path.isfile(path):
             rootpath = path
@@ -52,15 +53,16 @@ class handleFileData():
                                 sys.exit(0)
                             if r.search(content.lower()):
                                 with open("{}/{}.txt".format(rootpath, index), "a", encoding="utf-8") as fr:
-                                    fr.write("{}\r".format(content.strip()))
-                                    print("{}.txt -> {}".format(index, content.strip()))
+                                    fr.write("{}\n".format(content.strip()))
+                                    # print("{}.txt -> {}".format(index, content.strip()), end="\r\n")
                                 # has in will break
                                 hide = True
                                 break
                         if not hide:
                             with open("{}/not_hide.txt".format(rootpath), "a", encoding="utf-8") as fh:
-                                fh.write("{}\r".format(content.strip()))
-                                print("not_hide.txt -> {}".format(content.strip()))
+                                fh.write("{}\n".format(content.strip()))
+                                # print("not_hide.txt -> {}".format(content.strip()), end="\r\n")
+
                 except UnicodeDecodeError as e:
                     # has UnicodeDecodeError data buyao
                     print(e)
