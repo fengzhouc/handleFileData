@@ -35,37 +35,32 @@ class handleFileData():
         for file in handleFiles:
             # rb mode to open, will not has decodeError
             with open(file, "rb") as f:
-                try:
-                    for content in f:
+                for content in f:
+                    try:
+                        # handle decodeError
+                        content = content.decode("utf-8")
+                    except UnicodeDecodeError as e:
+                        # has UnicodeDecodeError data buyao
+                        # print("[UnicodeDecodeError] ", e)
+                        continue
+                    hide = False
+                    for index, rule in enumerate(self.rules):
                         try:
-                            # handle decodeError
-                            content = content.decode("utf-8")
-                        except UnicodeDecodeError as e:
-                            # has UnicodeDecodeError data buyao
-                            print("[UnicodeDecodeError] ", e)
-                            continue
-                        hide = False
-                        for index, rule in enumerate(self.rules):
-                            try:
-                                r = re.compile(rule)
-                            except re.error as e:
-                                print(e)
-                                sys.exit(0)
-                            if r.search(content.lower()):
-                                with open("{}/{}.txt".format(rootpath, index), "a", encoding="utf-8") as fr:
-                                    fr.write("{}\n".format(content.strip()))
-                                    # print("{}.txt -> {}".format(index, content.strip()), end="\r\n")
-                                # has in will break
-                                hide = True
-                                break
-                        if not hide:
-                            with open("{}/not_hide.txt".format(rootpath), "a", encoding="utf-8") as fh:
-                                fh.write("{}\n".format(content.strip()))
-                                # print("not_hide.txt -> {}".format(content.strip()), end="\r\n")
-
-                except UnicodeDecodeError as e:
-                    # has UnicodeDecodeError data buyao
-                    print(e)
+                            r = re.compile(rule)
+                        except re.error as e:
+                            print(e)
+                            sys.exit(0)
+                        if r.search(content.lower()):
+                            with open("{}/{}.txt".format(rootpath, index), "a", encoding="utf-8") as fr:
+                                fr.write("{}\n".format(content.strip()))
+                                # print("{}.txt -> {}".format(index, content.strip()), end="\r\n")
+                            # has in will break
+                            hide = True
+                            break
+                    if not hide:
+                        with open("{}/not_hide.txt".format(rootpath), "a", encoding="utf-8") as fh:
+                            fh.write("{}\n".format(content.strip()))
+                            # print("not_hide.txt -> {}".format(content.strip()), end="\r\n")
 
 
 # Press the green button in the gutter to run the script.
