@@ -50,7 +50,7 @@ class handleFileData():
                             except re.error as e:
                                 print(e)
                                 sys.exit(0)
-                            if r.search(content):
+                            if r.search(content.lower()):
                                 with open("{}/{}.txt".format(rootpath, index), "a", encoding="utf-8") as fr:
                                     fr.write("{}\r".format(content.strip()))
                                     print("{}.txt -> {}".format(index, content.strip()))
