@@ -4,7 +4,7 @@ import sys
 from configparser import ConfigParser
 
 
-class handleFileData():
+class handleFileData:
 
     path = "."
     rules = []
@@ -22,7 +22,6 @@ class handleFileData():
 
     def handle(self, path):
 
-        print("waiting.....")
         handleFiles = []
         if not os.path.isfile(path):
             rootpath = path
@@ -33,6 +32,7 @@ class handleFileData():
             p = path.split(os.sep)
             rootpath = os.sep.join(p[0:len(p)-1])
         for file in handleFiles:
+            print("[handle] {}, waiting.....".format(file))
             # rb mode to open, will not has decodeError
             with open(file, "rb") as f:
                 for content in f:
@@ -71,4 +71,4 @@ if __name__ == '__main__':
     handleFileData = handleFileData()
     handleFileData.handle(sys.argv[1])
     # handleFileData.handle("D:\\tools\\tools\\myDicts\\04 dirDict\\dir.txt")
-    pass
+    print("[Done] all complete.")
