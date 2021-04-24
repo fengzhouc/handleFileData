@@ -34,15 +34,16 @@ class handleFileData:
         for file in handleFiles:
             print("[handle] {}, waiting.....".format(file))
             # rb mode to open, will not has decodeError
-            with open(file, "rb") as f:
+            with open(file, "r", encoding="utf-8") as f:
                 for content in f:
-                    try:
-                        # handle decodeError
-                        content = content.decode("utf-8")
-                    except UnicodeDecodeError as e:
-                        # has UnicodeDecodeError data buyao
-                        # print("[UnicodeDecodeError] ", e)
-                        continue
+                    # print(content)
+                    # try:
+                    #     # handle decodeError
+                    #     content = content.decode("utf-8")
+                    # except UnicodeDecodeError as e:
+                    #     # has UnicodeDecodeError data buyao
+                    #     print("[UnicodeDecodeError] ", e)
+                    #     continue
                     hide = False
                     for index, rule in enumerate(self.rules):
                         try:
@@ -53,12 +54,12 @@ class handleFileData:
                         if r.search(content.lower()):
                             with open("{}/{}.txt".format(rootpath, index), "a", encoding="utf-8") as fr:
                                 fr.write("{}\n".format(content.strip()))
-                                # print("{}.txt -> {}".format(index, content.strip()), end="\r\n")
+                                print("{}.txt -> {}".format(index, len(content.strip())), end="\r\n")
                             # has in will break
                             hide = True
                             break
                     if not hide:
-                        with open("{}/not_hide.txt".format(rootpath), "a", encoding="utf-8") as fh:
+                        with open("{}/rest_api.txt".format(rootpath), "a", encoding="utf-8") as fh:
                             fh.write("{}\n".format(content.strip()))
                             # print("not_hide.txt -> {}".format(content.strip()), end="\r\n")
 
